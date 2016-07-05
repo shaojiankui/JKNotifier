@@ -45,13 +45,13 @@
     [self addSubview:self.nameLabel];
     [self addSubview:self.detailLabel];
 }
--(UIFont *)font{
+- (UIFont *)font{
     if (!_font) {
         _font =[UIFont systemFontOfSize:14.0];
     }
     return _font;
 }
--(UIEdgeInsets)edge{
+- (UIEdgeInsets)edge{
     return  UIEdgeInsetsMake(8.0, 50.0, 20.0, 5.0);
 }
 - (UIImageView *)iconView;
@@ -112,7 +112,7 @@
     }
 }
 
--(void)handleClickAction:(JKNotifierBarClickBlock)notifierBarClickBlock{
+- (void)handleClickAction:(JKNotifierBarClickBlock)notifierBarClickBlock{
     _notifierBarClickBlock = [notifierBarClickBlock copy];
 }
 
@@ -121,7 +121,7 @@
     [[UIColor lightGrayColor] setFill];
     [round fill];
 }
--(void)show:(NSString*)note name:(NSString*)appName icon:(UIImage*)appIcon{
+- (void)show:(NSString*)note name:(NSString*)appName icon:(UIImage*)appIcon{
     self.nameLabel.text = appName;
     self.detailLabel.text = note;
     self.iconView.image = appIcon;
@@ -140,7 +140,7 @@
                              CGRectGetWidth(self.frame)-self.edge.left-self.edge.right,detailLabelHeight);
     
     CGFloat selfHeight = MIN(CGRectGetHeight([UIScreen mainScreen].bounds), CGRectGetMaxY(self.detailLabel.frame)+self.edge.bottom);
-    self.frame = CGRectMake(CGRectGetMinX(self.frame), CGRectGetMinY(self.frame), CGRectGetWidth(self.frame),selfHeight);
+    self.frame = CGRectMake(0,-selfHeight,CGRectGetWidth(self.frame),selfHeight);
 
     [self setNeedsDisplay];
 }

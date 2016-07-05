@@ -26,46 +26,57 @@
     });
     return notifier;
 }
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notifierOrientationChange:) name:UIDeviceOrientationDidChangeNotification object:nil];
+
+    }
+    return self;
+}
 #pragma --mark getter
--(NSString*)appName{
+- (NSString*)appName{
     if (!_appName) {
         _appName =  [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleDisplayName"]?:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleName"];
     }
     return _appName;
 }
--(UIImage*)defaultIcon{
+- (UIImage*)defaultIcon{
     if (!_defaultIcon) {
         
         _defaultIcon = [self loadPlistIcon] ?:[UIImage imageNamed:@"AppIcon"] ?:[UIImage imageNamed:@"AppIcon-1"] ?:[UIImage imageNamed:@"AppIcon-2"] ?:[UIImage imageNamed:@"AppIcon-3"] ?:[UIImage imageNamed:@"JKNotifier_default_icon"];
     }
     return _defaultIcon;
 }
--(JKNotifierBar*)notifierBar{
+- (JKNotifierBar*)notifierBar{
     if (!_notifierBar) {
         _notifierBar = [[JKNotifierBar alloc] init];
-        _notifierBar.transform = CGAffineTransformMakeTranslation(0, -_notifierBar.frame.size.height);
+        CGRect frame = _notifierBar.frame;
+        frame.origin.y = -frame.size.height;
+        _notifierBar.frame = frame;
     }
     return _notifierBar;
 }
-+(void)handleClickAction:(JKNotifierBarClickBlock)notifierBarClickBlock{
++ (void)handleClickAction:(JKNotifierBarClickBlock)notifierBarClickBlock{
    [[self shareInstance].notifierBar handleClickAction:notifierBarClickBlock];
 }
 
 #pragma --mark class method
-+(JKNotifierBar*)showNotiferRemain:(NSString*)note{
++ (JKNotifierBar*)showNotiferRemain:(NSString*)note{
     return [JKNotifier showNotiferRemain:note name:nil];
 }
 
-+(JKNotifierBar*)showNotiferRemain:(NSString*)note
++ (JKNotifierBar*)showNotiferRemain:(NSString*)note
                               name:(NSString*)appName{
     return [JKNotifier showNotifer:note name:appName icon:nil dismissAfter:-1];
 }
 
-+(JKNotifierBar*)showNotifer:(NSString*)note{
++ (JKNotifierBar*)showNotifer:(NSString*)note{
     return [JKNotifier showNotifer:note dismissAfter:2];
 }
 
-+(JKNotifierBar*)showNotifer:(NSString*)note name:(NSString*)appName icon:(UIImage*)appIcon{
++ (JKNotifierBar*)showNotifer:(NSString*)note name:(NSString*)appName icon:(UIImage*)appIcon{
     return [JKNotifier showNotifer:note name:appName icon:appIcon dismissAfter:2];
 }
 
@@ -73,7 +84,7 @@
                     dismissAfter:(NSTimeInterval)delay{
     return [self showNotifer:note name:nil icon:nil dismissAfter:delay];
 }
-+(JKNotifierBar*)showNotifer:(NSString*)note
++ (JKNotifierBar*)showNotifer:(NSString*)note
                            name:(NSString*)appName
                            icon:(UIImage*)appIcon
                    dismissAfter:(NSTimeInterval)delay{
@@ -98,36 +109,53 @@
 
 }
 #pragma --instance method
--(JKNotifierBar*)showNotifer:(NSString*)note name:(NSString*)appName icon:(UIImage*)appIcon{
+- (JKNotifierBar*)showNotifer:(NSString*)note name:(NSString*)appName icon:(UIImage*)appIcon{
     
     [self.notifierBar.layer removeAllAnimations];
     self.notifierBar.userInteractionEnabled = YES;
+    [self.notifierBar removeFromSuperview];
+    self.notifierBar = nil;
     
     AudioServicesPlaySystemSound(1007);
 
     [self.notifierBar show:note name:appName icon:appIcon];
     [UIView animateWithDuration:(0.4) animations:^{
         self.notifierBar.alpha = 1.0;
-        self.notifierBar.transform = CGAffineTransformIdentity;
+        CGRect frame = _notifierBar.frame;
+        frame.origin.y = 0.;
+        _notifierBar.frame = frame;
     }];
     return self.notifierBar;
 }
 
 - (void)dismiss
 {
+    [self dismissWithAnimation:YES];
+}
+- (void)dismissWithAnimation:(BOOL)animated{
     [[NSRunLoop currentRunLoop] cancelPerformSelector:@selector(dismiss) target:self argument:nil];
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(dismiss) object:nil];
     
-    [UIView animateWithDuration:0.4 animations:^{
-        self.notifierBar.transform = CGAffineTransformMakeTranslation(0, -self.notifierBar.frame.size.height);
-    } completion:^(BOOL finished) {
-        self.notifierBar.userInteractionEnabled = NO;
-    }];
+    if(animated){
+        [UIView animateWithDuration:0.4 animations:^{
+            CGRect frame = _notifierBar.frame;
+            frame.origin.y = -frame.size.height;
+            _notifierBar.frame = frame;
+        } completion:^(BOOL finished) {
+            self.notifierBar.userInteractionEnabled = NO;
+            _notifierBar.hidden = YES;
+        }];
+    }else{
+        _notifierBar.hidden = YES;
+    }
 }
-
+- (void)notifierOrientationChange:(NSNotification *)notification
+{
+    [self dismissWithAnimation:NO];
+}
 #pragma --mark helper
 
--(UIImage*)loadPlistIcon{
+- (UIImage*)loadPlistIcon{
     NSString *iconString = @"Icon.png";
     NSArray *icons = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleIconFiles"];
     if (!icons) {

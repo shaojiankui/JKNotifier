@@ -1,8 +1,9 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="7531" systemVersion="14E17e" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="10116" systemVersion="16A201w" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7520"/>
+        <development version="7000" identifier="xcode"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="RootViewController">
@@ -12,40 +13,48 @@
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
-            <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+            <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="SwY-QE-oYL">
-                    <rect key="frame" x="39" y="282" width="250" height="40"/>
-                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                    <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SwY-QE-oYL">
+                    <rect key="frame" x="41" y="80" width="250" height="30"/>
+                    <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="250" id="8l8-r3-b0L"/>
+                    </constraints>
                     <state key="normal" title="AutoHidden Notifier"/>
                     <connections>
                         <action selector="showAutoHiddenTouched:" destination="-1" eventType="touchUpInside" id="RPa-Lo-8HQ"/>
                     </connections>
                 </button>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="Yps-ad-Muh">
-                    <rect key="frame" x="39" y="435" width="250" height="40"/>
-                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                    <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Yps-ad-Muh">
+                    <rect key="frame" x="41" y="213" width="250" height="30"/>
+                    <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="250" id="shL-fd-GPk"/>
+                    </constraints>
                     <state key="normal" title="CustomTitle Notifier"/>
                     <connections>
                         <action selector="customTitleTouched:" destination="-1" eventType="touchUpInside" id="aTS-6b-f1h"/>
                     </connections>
                 </button>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="fE6-g3-7xs">
-                    <rect key="frame" x="39" y="510" width="250" height="40"/>
-                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                    <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fE6-g3-7xs">
+                    <rect key="frame" x="41" y="278" width="250" height="30"/>
+                    <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="250" id="Tat-2N-VVm"/>
+                    </constraints>
                     <state key="normal" title="UILocalNotification Notifier"/>
                     <connections>
                         <action selector="localNotificationTouched:" destination="-1" eventType="touchUpInside" id="3Zn-SY-uDm"/>
                     </connections>
                 </button>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="2jx-Nd-sTb">
-                    <rect key="frame" x="39" y="361" width="250" height="40"/>
-                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                    <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2jx-Nd-sTb">
+                    <rect key="frame" x="41" y="149" width="250" height="30"/>
+                    <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="250" id="jLS-Nk-Sm6"/>
+                    </constraints>
                     <state key="normal" title="Remain Notifier"/>
                     <connections>
                         <action selector="remainTouched:" destination="-1" eventType="touchUpInside" id="m7q-aI-15U"/>
@@ -53,12 +62,26 @@
                 </button>
             </subviews>
             <color key="backgroundColor" red="0.16078431369999999" green="0.56862745100000001" blue="0.76470588240000004" alpha="1" colorSpace="calibratedRGB"/>
+            <constraints>
+                <constraint firstItem="Yps-ad-Muh" firstAttribute="top" secondItem="2jx-Nd-sTb" secondAttribute="bottom" constant="34" id="7Yx-v2-BxU"/>
+                <constraint firstItem="fE6-g3-7xs" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="41" id="BVt-MA-r3o"/>
+                <constraint firstItem="SwY-QE-oYL" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="80" id="P4b-ge-dbC"/>
+                <constraint firstAttribute="trailing" secondItem="fE6-g3-7xs" secondAttribute="trailing" constant="29" id="Plu-UN-Yrl"/>
+                <constraint firstAttribute="trailing" secondItem="2jx-Nd-sTb" secondAttribute="trailing" constant="29" id="Utj-UM-mSe"/>
+                <constraint firstItem="2jx-Nd-sTb" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="41" id="Z5o-uO-Jeb"/>
+                <constraint firstItem="2jx-Nd-sTb" firstAttribute="top" secondItem="SwY-QE-oYL" secondAttribute="bottom" constant="39" id="bsC-ch-XRe"/>
+                <constraint firstAttribute="trailing" secondItem="Yps-ad-Muh" secondAttribute="trailing" constant="29" id="ftx-QX-mEw"/>
+                <constraint firstItem="fE6-g3-7xs" firstAttribute="top" secondItem="Yps-ad-Muh" secondAttribute="bottom" constant="35" id="kLE-Sq-B1l"/>
+                <constraint firstItem="Yps-ad-Muh" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="41" id="m5U-6B-NWb"/>
+                <constraint firstItem="SwY-QE-oYL" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="41" id="nor-42-wVE"/>
+                <constraint firstAttribute="trailing" secondItem="SwY-QE-oYL" secondAttribute="trailing" constant="29" id="uwp-yy-6z7"/>
+            </constraints>
             <point key="canvasLocation" x="305" y="436"/>
         </view>
     </objects>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>
-        <simulatedScreenMetrics key="destination" type="retina4"/>
+        <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
 </document>

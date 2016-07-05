@@ -19,7 +19,7 @@
     // Do any additional setup after loading the view from its nib.
    self.title = @"Some Demo of JKNotifier";
 }
-
+ 
 - (IBAction)showAutoHiddenTouched:(id)sender {
     [JKNotifier showNotifer:[NSString stringWithFormat:@"亲,您收到了一条自动隐藏的消息哦!%@",[self random]]];
     

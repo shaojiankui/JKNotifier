@@ -14,7 +14,7 @@ typedef void(^JKNotifierBarClickBlock)(NSString *name,NSString *detail,JKNotifie
 {
     JKNotifierBarClickBlock _notifierBarClickBlock;
 }
--(void)show:(NSString*)note name:(NSString*)appName icon:(UIImage*)appIcon;
+- (void)show:(NSString*)note name:(NSString*)appName icon:(UIImage*)appIcon;
 
--(void)handleClickAction:(JKNotifierBarClickBlock)notifierBarClickBlock;
+- (void)handleClickAction:(JKNotifierBarClickBlock)notifierBarClickBlock;
 @end

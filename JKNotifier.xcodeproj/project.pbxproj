@@ -277,6 +277,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SYSTEM_APPS_DIR)/Reveal.app/Contents/SharedSupport/iOS-Libraries",
+					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = JKNotifier/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
@@ -294,6 +295,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SYSTEM_APPS_DIR)/Reveal.app/Contents/SharedSupport/iOS-Libraries",
+					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = JKNotifier/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;

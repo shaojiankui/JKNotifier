@@ -126,6 +126,10 @@
     self.detailLabel.text = note;
     self.iconView.image = appIcon;
 //    self.timeLabel.text = @"刚刚";
+    UIApplication *sharedApplication = [UIApplication sharedApplication];
+    self.frame = sharedApplication.statusBarFrame;
+    self.transform = CGAffineTransformIdentity;
+
     
     self.iconView.frame = CGRectMake(15, 7, 20, 20);
     
@@ -141,6 +145,9 @@
     
     CGFloat selfHeight = MIN(CGRectGetHeight([UIScreen mainScreen].bounds), CGRectGetMaxY(self.detailLabel.frame)+self.edge.bottom);
     self.frame = CGRectMake(0,-selfHeight,CGRectGetWidth(self.frame),selfHeight);
+
+    self.frame = CGRectMake(CGRectGetMinX(self.frame), 0, CGRectGetWidth(self.frame),selfHeight);
+    self.transform = CGAffineTransformMakeTranslation(0, -self.frame.size.height);
 
     [self setNeedsDisplay];
 }

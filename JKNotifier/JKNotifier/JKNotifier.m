@@ -52,9 +52,9 @@
 - (JKNotifierBar*)notifierBar{
     if (!_notifierBar) {
         _notifierBar = [[JKNotifierBar alloc] init];
-        CGRect frame = _notifierBar.frame;
-        frame.origin.y = -frame.size.height;
-        _notifierBar.frame = frame;
+//        CGRect frame = _notifierBar.frame;
+//        frame.origin.y = -frame.size.height;
+//        _notifierBar.frame = frame;
     }
     return _notifierBar;
 }
@@ -111,9 +111,11 @@
 #pragma --instance method
 - (JKNotifierBar*)showNotifer:(NSString*)note name:(NSString*)appName icon:(UIImage*)appIcon{
     
+    
+    
     [self.notifierBar.layer removeAllAnimations];
     self.notifierBar.userInteractionEnabled = YES;
-    [self.notifierBar removeFromSuperview];
+//    [self.notifierBar removeFromSuperview];
     self.notifierBar = nil;
     
     AudioServicesPlaySystemSound(1007);

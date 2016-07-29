@@ -17,6 +17,10 @@
 @property (nonatomic, assign) UIEdgeInsets edge;
 @property (nonatomic, strong) UIFont *font;
 
+@property(nonatomic,strong)UIPanGestureRecognizer *panGestureRecognizer;
+@property(nonatomic,strong)UITapGestureRecognizer *tapGestureRecognizer;
+
+
 @end
 
 @implementation JKNotifierBar
@@ -28,6 +32,8 @@
     if (self)
     {
         [self buildWindow];
+        self.isDissiming=NO;
+        self.orientation=[UIApplication sharedApplication].statusBarOrientation;
     }
     return self;
 }
@@ -39,11 +45,49 @@
     self.backgroundColor = [UIColor colorWithWhite:0.000 alpha:0.800];
     
     UIApplication *sharedApplication = [UIApplication sharedApplication];
-    self.frame = sharedApplication.statusBarFrame;
     
+
+    if (LESS_IOS0_AND_ORIENTATION_PORTRAIT) {
+        self.transform=CGAffineTransformMakeRotation(M_PI/2);
+    }
+    
+    if (CGRectIsEmpty(sharedApplication.statusBarFrame)) {
+        
+        if (LESS_IOS0_AND_ORIENTATION_PORTRAIT) {
+            self.frame = CGRectMake(CGRectGetWidth([UIScreen mainScreen].bounds)-64, 0, 64, CGRectGetWidth([UIScreen mainScreen].bounds));
+        }else{
+            self.frame = CGRectMake(0, 0, CGRectGetWidth([UIScreen mainScreen].bounds), 64);
+        }
+    }else{
+        
+        if (LESS_IOS0_AND_ORIENTATION_PORTRAIT) {
+            
+            CGRect screenRect=[UIScreen mainScreen].bounds;
+            int screenHeight=MAX(CGRectGetWidth(screenRect), CGRectGetHeight(screenRect));
+            int screenWith=MIN(CGRectGetWidth(screenRect), CGRectGetHeight(screenRect));
+
+            self.frame = CGRectMake(screenWith-64, 0, 64, screenHeight);
+        }else{
+            self.frame = CGRectMake(0, 0, CGRectGetWidth([UIScreen mainScreen].bounds), 64);
+        }
+    }
+
     [self addSubview:self.iconView];
     [self addSubview:self.nameLabel];
     [self addSubview:self.detailLabel];
+    
+//    UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self
+//                                                                                       action:@selector(swipeGesture:)];
+//    swipeGesture.direction = UISwipeGestureRecognizerDirectionUp;
+//    [self addGestureRecognizer:swipeGesture];
+
+    _panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self
+                                                                    action:@selector(handlePan:)];
+    [self addGestureRecognizer:_panGestureRecognizer];
+    _tapGestureRecognizer = [[UITapGestureRecognizer alloc]initWithTarget:self
+                                                                   action:@selector(handleTap:)];
+    [self addGestureRecognizer:_tapGestureRecognizer];
+
 }
 - (UIFont *)font{
     if (!_font) {
@@ -106,41 +150,85 @@
 }
 
 #pragma --mark getter
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event{
-    if (_notifierBarClickBlock) {
-        _notifierBarClickBlock(self.nameLabel.text?:@"",self.detailLabel.text?:@"",[JKNotifier shareInstance]);
-    }
-}
 
 - (void)handleClickAction:(JKNotifierBarClickBlock)notifierBarClickBlock{
     _notifierBarClickBlock = [notifierBarClickBlock copy];
 }
 
 - (void)drawRect:(CGRect)rect{
-    UIBezierPath  *round = [UIBezierPath bezierPathWithRoundedRect:CGRectMake((CGRectGetWidth(self.frame)-35)/2, CGRectGetHeight(self.frame)-12, 35, 5) byRoundingCorners:(UIRectCornerAllCorners) cornerRadii:CGSizeMake(10, 10)];
-    [[UIColor lightGrayColor] setFill];
-    [round fill];
+    
+    if (LESS_IOS0_AND_ORIENTATION_PORTRAIT) {
+    
+        CGRect rect=CGRectMake((CGRectGetHeight(self.frame)-35)/2, CGRectGetWidth(self.frame)-12, 35, 5);
+
+        UIBezierPath  *round = [UIBezierPath bezierPathWithRoundedRect:rect
+                                                     byRoundingCorners:(UIRectCornerAllCorners) cornerRadii:CGSizeMake(10, 10)];
+        [[UIColor lightGrayColor] setFill];
+        [round fill];
+
+
+    }else{
+        
+        UIBezierPath  *round = [UIBezierPath bezierPathWithRoundedRect:CGRectMake((CGRectGetWidth(self.frame)-35)/2, CGRectGetHeight(self.frame)-12, 35, 5) byRoundingCorners:(UIRectCornerAllCorners) cornerRadii:CGSizeMake(10, 10)];
+        [[UIColor lightGrayColor] setFill];
+        [round fill];
+
+    }
 }
 - (void)show:(NSString*)note name:(NSString*)appName icon:(UIImage*)appIcon{
+    
     self.nameLabel.text = appName;
     self.detailLabel.text = note;
     self.iconView.image = appIcon;
-//    self.timeLabel.text = @"刚刚";
-    
-    self.iconView.frame = CGRectMake(15, 7, 20, 20);
-    
-    CGFloat nameLabelHeight  =  MIN(40, [self heightWithString:appName fontSize:self.font.pointSize width:CGRectGetWidth(self.frame)-self.edge.left-self.edge.right]);
-    self.nameLabel.frame = CGRectMake(self.edge.left, self.edge.top, CGRectGetWidth(self.frame)-self.edge.left-self.edge.right,nameLabelHeight);
+    if (LESS_IOS0_AND_ORIENTATION_PORTRAIT) {
+        
+        CGRect screenRect=[UIScreen mainScreen].bounds;
+        int screenHeight=MAX(CGRectGetWidth(screenRect), CGRectGetHeight(screenRect));
 
-    
-    CGFloat detailLabelHeight =  MIN(CGRectGetHeight([UIScreen mainScreen].bounds)-40-self.edge.bottom, [self heightWithString:note fontSize:self.font.pointSize width:CGRectGetWidth(self.frame)-self.edge.left-self.edge.right]);
-    
-    self.detailLabel.frame = CGRectMake(self.edge.left,
-                             CGRectGetMaxY(self.nameLabel.frame),
-                             CGRectGetWidth(self.frame)-self.edge.left-self.edge.right,detailLabelHeight);
-    
-    CGFloat selfHeight = MIN(CGRectGetHeight([UIScreen mainScreen].bounds), CGRectGetMaxY(self.detailLabel.frame)+self.edge.bottom);
-    self.frame = CGRectMake(0,-selfHeight,CGRectGetWidth(self.frame),selfHeight);
+        self.iconView.frame = CGRectMake( 15, 7, 20, 20);
+        
+        CGFloat nameLabelWidth = CGRectGetHeight(self.frame)-self.edge.left-self.edge.right;
+        CGFloat nameLabelHeight = MIN(40, [self heightWithString:appName fontSize:self.font.pointSize width:nameLabelWidth]);
+        
+        self.nameLabel.frame = CGRectMake(self.edge.left,
+                                          self.edge.top,
+                                          CGRectGetHeight(self.frame)-self.edge.left-self.edge.right,
+                                          nameLabelHeight);
+        
+        
+        CGFloat detailLabelHeight =  MIN(screenHeight-40-self.edge.bottom, [self heightWithString:note fontSize:self.font.pointSize width:CGRectGetHeight(self.frame)-self.edge.left-self.edge.right]);
+        
+        self.detailLabel.frame = CGRectMake(self.edge.left,
+                                            CGRectGetMaxY(self.nameLabel.frame),
+                                            CGRectGetHeight(self.frame)-self.edge.left-self.edge.right,detailLabelHeight);
+
+        CGFloat selfHeight = MIN(screenHeight, CGRectGetMaxY(self.detailLabel.frame)+self.edge.bottom);
+
+        CGRect frame = self.frame;
+        CGFloat rightLine=frame.origin.x+frame.size.width;
+        self.frame = CGRectMake(rightLine-selfHeight,frame.origin.y,selfHeight,frame.size.height);
+        
+        
+    }else{
+        
+        self.iconView.frame = CGRectMake(15, 7, 20, 20);
+        
+        CGFloat nameLabelHeight  =  MIN(40, [self heightWithString:appName fontSize:self.font.pointSize width:CGRectGetWidth(self.frame)-self.edge.left-self.edge.right]);
+        
+        self.nameLabel.frame = CGRectMake(self.edge.left, self.edge.top, CGRectGetWidth(self.frame)-self.edge.left-self.edge.right,nameLabelHeight);
+        
+        
+        CGFloat detailLabelHeight =  MIN(CGRectGetHeight([UIScreen mainScreen].bounds)-40-self.edge.bottom, [self heightWithString:note fontSize:self.font.pointSize width:CGRectGetWidth(self.frame)-self.edge.left-self.edge.right]);
+        
+        self.detailLabel.frame = CGRectMake(self.edge.left,
+                                            CGRectGetMaxY(self.nameLabel.frame),
+                                            CGRectGetWidth(self.frame)-self.edge.left-self.edge.right,detailLabelHeight);
+        
+        CGFloat selfHeight = MIN(CGRectGetHeight([UIScreen mainScreen].bounds), CGRectGetMaxY(self.detailLabel.frame)+self.edge.bottom);
+        
+        self.frame = CGRectMake(0,-selfHeight,CGRectGetWidth(self.frame),selfHeight);
+    }
+
 
     [self setNeedsDisplay];
 }
@@ -153,5 +241,82 @@
 {
     NSDictionary *attrs = @{NSFontAttributeName:[UIFont systemFontOfSize:fontSize]};
     return  [string boundingRectWithSize:CGSizeMake(width, 0) options:NSStringDrawingTruncatesLastVisibleLine | NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading attributes:attrs context:nil].size.height;
+}
+
+#pragma mark -
+#pragma mark  Gesture Event
+
+- (void)handlePan:(UIPanGestureRecognizer *)recognizer
+{
+    
+    if (LESS_IOS0_AND_ORIENTATION_PORTRAIT) {
+        
+        static CGFloat originX=0;
+        
+        CGPoint translatedPoint = [recognizer translationInView:self];
+        CGFloat x = recognizer.view.center.x + translatedPoint.x;
+        
+        if (recognizer.state == UIGestureRecognizerStateBegan) {
+            
+            originX=recognizer.view.center.x;
+        }
+        if (recognizer.state == UIGestureRecognizerStateChanged) {
+            
+            if (x <= originX) {
+                x=originX;
+            }
+        }
+        if (recognizer.state == UIGestureRecognizerStateEnded) {
+            
+            if (x > originX) {
+                
+                [JKNotifier dismiss];
+            }
+        }
+        recognizer.view.center = CGPointMake(x, recognizer.view.center.y);
+        [recognizer setTranslation:CGPointMake(0, 0) inView:self];
+
+        
+    }else{
+        
+        static CGFloat originY=0;
+        
+        CGPoint translatedPoint = [recognizer translationInView:self];
+        CGFloat y = recognizer.view.center.y + translatedPoint.y;
+        
+        if (recognizer.state == UIGestureRecognizerStateBegan) {
+            
+            originY=recognizer.view.center.y;
+        }
+        if (recognizer.state == UIGestureRecognizerStateChanged) {
+            
+            if (y >= originY) {
+                y=originY;
+            }
+        }
+        if (recognizer.state == UIGestureRecognizerStateEnded) {
+            
+            if (y < originY) {
+                
+                [JKNotifier dismiss];
+            }
+            originY=0;
+        }
+        recognizer.view.center = CGPointMake(recognizer.view.center.x, y);
+        [recognizer setTranslation:CGPointMake(0, 0) inView:self];
+
+    }
+}
+//-(void)swipeGesture:(UISwipeGestureRecognizer*)gesture{
+//    
+//    [JKNotifier dismiss];
+////    [self removeWithAnimation];
+//}
+-(void)handleTap:(UIPanGestureRecognizer *)recognizer{
+    
+    if (_notifierBarClickBlock) {
+        _notifierBarClickBlock(self.nameLabel.text?:@"",self.detailLabel.text?:@"",[JKNotifier shareInstance]);
+    }
+    
 }
 @end

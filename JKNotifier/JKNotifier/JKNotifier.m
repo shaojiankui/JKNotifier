@@ -9,10 +9,16 @@
 #import "JKNotifier.h"
 #import <AudioToolbox/AudioToolbox.h>
 
+static NSTimeInterval const defaultDelay =10;
+
 @interface JKNotifier()
 @property (nonatomic, strong) JKNotifierBar *notifierBar;
 @property (nonatomic, strong) UIImage *defaultIcon;
-@property (nonatomic, strong) NSString *appName;
+@property (nonatomic, copy) NSString *appName;
+
+//- (JKNotifierBar*)showNotifer:(NSString*)note name:(NSString*)appName icon:(UIImage*)appIcon{
+
+@property (nonatomic,copy)NSString *note;
 
 @end
 
@@ -52,9 +58,18 @@
 - (JKNotifierBar*)notifierBar{
     if (!_notifierBar) {
         _notifierBar = [[JKNotifierBar alloc] init];
-        CGRect frame = _notifierBar.frame;
-        frame.origin.y = -frame.size.height;
-        _notifierBar.frame = frame;
+        
+        if (LESS_IOS0_AND_ORIENTATION_PORTRAIT) {
+            
+            CGRect frame = _notifierBar.frame;
+            frame.origin.x +=frame.size.width;
+            
+        }else{
+            
+            CGRect frame = _notifierBar.frame;
+            frame.origin.y = -frame.size.height;
+            _notifierBar.frame = frame;
+        }
     }
     return _notifierBar;
 }
@@ -73,11 +88,11 @@
 }
 
 + (JKNotifierBar*)showNotifer:(NSString*)note{
-    return [JKNotifier showNotifer:note dismissAfter:2];
+    return [JKNotifier showNotifer:note dismissAfter:defaultDelay];
 }
 
 + (JKNotifierBar*)showNotifer:(NSString*)note name:(NSString*)appName icon:(UIImage*)appIcon{
-    return [JKNotifier showNotifer:note name:appName icon:appIcon dismissAfter:2];
+    return [JKNotifier showNotifer:note name:appName icon:appIcon dismissAfter:defaultDelay];
 }
 
 + (JKNotifierBar*)showNotifer:(NSString *)note
@@ -88,6 +103,11 @@
                            name:(NSString*)appName
                            icon:(UIImage*)appIcon
                    dismissAfter:(NSTimeInterval)delay{
+    
+    [self shareInstance].note=note;
+    [self shareInstance].appName=appName;
+//    [self shareInstance].appIcon=appIcon;
+
     JKNotifierBar *bar =  [[self shareInstance] showNotifer:note
                                         name:appName?:[self shareInstance].appName
                                         icon:appIcon?:[self shareInstance].defaultIcon];
@@ -111,6 +131,7 @@
 #pragma --instance method
 - (JKNotifierBar*)showNotifer:(NSString*)note name:(NSString*)appName icon:(UIImage*)appIcon{
     
+    
     [self.notifierBar.layer removeAllAnimations];
     self.notifierBar.userInteractionEnabled = YES;
     [self.notifierBar removeFromSuperview];
@@ -121,9 +142,20 @@
     [self.notifierBar show:note name:appName icon:appIcon];
     [UIView animateWithDuration:(0.4) animations:^{
         self.notifierBar.alpha = 1.0;
-        CGRect frame = _notifierBar.frame;
-        frame.origin.y = 0.;
-        _notifierBar.frame = frame;
+        
+        
+        if (LESS_IOS0_AND_ORIENTATION_PORTRAIT) {
+            
+            CGRect frame = _notifierBar.frame;
+            frame.origin.x -=frame.size.width;
+            
+        }else{
+            
+            CGRect frame = _notifierBar.frame;
+            frame.origin.y = 0.;
+            _notifierBar.frame = frame;
+        }
+
     }];
     return self.notifierBar;
 }
@@ -135,12 +167,26 @@
 - (void)dismissWithAnimation:(BOOL)animated{
     [[NSRunLoop currentRunLoop] cancelPerformSelector:@selector(dismiss) target:self argument:nil];
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(dismiss) object:nil];
-    
+    _notifierBar.isDissiming=YES;
     if(animated){
         [UIView animateWithDuration:0.4 animations:^{
-            CGRect frame = _notifierBar.frame;
-            frame.origin.y = -frame.size.height;
-            _notifierBar.frame = frame;
+            
+            if (LESS_IOS0_AND_ORIENTATION_PORTRAIT) {
+                
+                CGRect frame = _notifierBar.frame;
+//                frame.origin.x +=frame.size.width;
+//                _notifierBar.frame=frame;
+                _notifierBar.transform=CGAffineTransformTranslate(_notifierBar.transform,CGRectGetWidth(frame), 0);
+                
+            }else{
+                
+                CGRect frame = _notifierBar.frame;
+//                frame.origin.y = -frame.size.height;
+//                _notifierBar.frame = frame;
+                _notifierBar.transform=CGAffineTransformTranslate(_notifierBar.transform,0, -frame.size.height);
+
+            }
+
         } completion:^(BOOL finished) {
             self.notifierBar.userInteractionEnabled = NO;
             _notifierBar.hidden = YES;
@@ -151,7 +197,12 @@
 }
 - (void)notifierOrientationChange:(NSNotification *)notification
 {
-    [self dismissWithAnimation:NO];
+    
+    if ([UIApplication sharedApplication].statusBarOrientation != _notifierBar.orientation) {
+        if (_notifierBar.hidden == NO && _notifierBar.isDissiming == NO) {
+            [self showNotifer:self.note name:self.appName icon:[self loadPlistIcon]];
+        }
+    }
 }
 #pragma --mark helper
 

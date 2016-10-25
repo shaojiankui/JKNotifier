@@ -120,7 +120,7 @@
 
     [self.notifierBar show:note name:appName icon:appIcon];
     [UIView animateWithDuration:(0.4) animations:^{
-        self.notifierBar.alpha = 1.0;
+        self.notifierBar.alpha = 0.8;
         CGRect frame = _notifierBar.frame;
         frame.origin.y = 0.;
         _notifierBar.frame = frame;
